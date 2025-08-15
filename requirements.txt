@@ -1,0 +1,10 @@
+fastmcp>=0.1.0
+fastapi==0.68.1
+uvicorn==0.15.0
+python-multipart==0.0.5
+aiohttp==3.8.1
+tencentcloud-sdk-python>=3.0.0
+cos-python-sdk-v5>=1.9.0
+requests>=2.26.0
+pydantic>=1.8.0
+python-dotenv>=0.19.0

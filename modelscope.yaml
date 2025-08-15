@@ -1,0 +1,82 @@
+model:
+  name: voice-transcription-service
+  type: api
+  description: 基于腾讯云的语音转写服务，支持说话人分离和情感识别
+  framework: fastapi
+  requirements:
+    - fastapi==0.68.1
+    - uvicorn==0.15.0
+    - python-multipart==0.0.5
+    - aiohttp==3.8.1
+    - tencentcloud-sdk-python>=3.0.0
+    - cos-python-sdk-v5>=1.9.0
+    - requests>=2.26.0
+    - pydantic>=1.8.0
+    - python-dotenv>=0.19.0
+
+api:
+  endpoint: /transcribe
+  method: POST
+  auth:
+    type: bearer
+  rateLimit:
+    requests: 100
+    period: 1m
+  input:
+    type: multipart/form-data
+    parameters:
+      - name: file
+        type: file
+        description: 音频文件（最大512MB）
+        required: true
+      - name: secret_id
+        type: string
+        description: 腾讯云 SecretId（可选，如果环境变量中已设置）
+        required: false
+      - name: secret_key
+        type: string
+        description: 腾讯云 SecretKey（可选，如果环境变量中已设置）
+        required: false
+      - name: cos_bucket
+        type: string
+        description: COS 存储桶名称（可选，如果环境变量中已设置）
+        required: false
+      - name: cos_region
+        type: string
+        description: COS 存储桶地域（可选，如果环境变量中已设置）
+        required: false
+  output:
+    type: text/event-stream
+    description: SSE 实时转写结果流
+
+runtime:
+  python: 3.9
+  env:
+    - name: TENCENT_SECRET_ID
+      type: string
+      description: 腾讯云 SecretId
+      required: false
+    - name: TENCENT_SECRET_KEY
+      type: string
+      description: 腾讯云 SecretKey
+      required: false
+    - name: COS_BUCKET
+      type: string
+      description: COS 存储桶名称
+      required: false
+    - name: COS_REGION
+      type: string
+      description: COS 存储桶地域
+      required: false
+    - name: API_TOKEN
+      type: string
+      description: API 访问令牌
+      required: false
+    - name: MAX_CONCURRENT_TASKS
+      type: integer
+      description: 最大并发任务数
+      default: 4
+    - name: MAX_FILE_SIZE_MB
+      type: integer
+      description: 最大文件大小（MB）
+      default: 512
